@@ -9,7 +9,7 @@ namespace LiveContainersMSL;
 
 public class LiveContainers : Mod
 {
-    public override string Author => "Codex";
+    public override string Author => "leafnwind";
     public override string Name => "Live Containers";
     public override string Description => "Adds reusable live-container base classes whose closed contents remain instantiated.";
     public override string ShortDesc => "Reusable live container framework.";

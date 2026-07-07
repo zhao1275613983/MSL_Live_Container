@@ -4,7 +4,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <MslRoot Condition="'$(MslRoot)' == '' and Exists('..\..\ModShardLauncher.dll')">..\..</MslRoot>
-    <MslRoot Condition="'$(MslRoot)' == ''">J:\msl</MslRoot>
   </PropertyGroup>
 
   <ItemGroup>

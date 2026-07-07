@@ -35,11 +35,11 @@ they sort after `Live Containers` in ModShardLauncher.
 The canonical source project lives in this repository. During normal
 development, edit the files here first.
 
-When you want to compile it from the ModShardLauncher UI, copy this project into
+When you want to compile it from the ModShardLauncher UI, place this project in
 MSL's source-project directory using the release mod name as the folder name:
 
 ```text
-J:\msl\ModSources\LiveContainers
+<MSL_ROOT>\ModSources\LiveContainers
 ```
 
 The folder should contain at least:
@@ -298,9 +298,10 @@ loot rules for concrete items. Your addon still needs to add or clone:
 
 The project targets `net6.0-windows`. When the project is placed under
 `ModSources`, the `.csproj` references ModShardLauncher assemblies through the
-relative `..\..` path. Outside MSL's folder, it falls back to `J:\msl` for local
-development. Running `dotnet build` is useful for quick C# syntax checks, but
-the normal distributable `.sml` should be produced by ModShardLauncher from the
+relative `..\..` path. Outside MSL's folder, pass the launcher directory
+explicitly, for example `dotnet build -p:MslRoot="<MSL_ROOT>"`. Running
+`dotnet build` is useful for quick C# syntax checks, but the normal
+distributable `.sml` should be produced by ModShardLauncher from the
 `ModSources` project folder.
 
 The helper scripts under the local development workspace are only for this

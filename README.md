@@ -30,6 +30,43 @@ this DLL directly; it relies on the objects and GML scripts patched into
 A simple convention is to name addons like `Live Containers - My Container` so
 they sort after `Live Containers` in ModShardLauncher.
 
+## Building With ModShardLauncher
+
+The canonical source project lives in this repository. During normal
+development, edit the files here first.
+
+When you want to compile it from the ModShardLauncher UI, copy this project into
+MSL's source-project directory using the release mod name as the folder name:
+
+```text
+J:\msl\ModSources\LiveContainers
+```
+
+The folder should contain at least:
+
+```text
+LiveContainers
+|-- LiveContainers.cs
+|-- LiveContainers.csproj
+|-- README.md
+```
+
+Then open ModShardLauncher, compile/pack this source project from the UI, and
+enable the generated `.sml` mod. MSL compiles the C# source during packing, so
+you do not need to run `dotnet build` manually for normal use.
+
+For release/load-order clarity, the packed mod file may be named:
+
+```text
+LiveContainers.sml
+```
+
+Downstream container mods should be loaded after it.
+
+Do not compile the same source from a differently named folder such as
+`MSL_Live_Container`, because MSL will produce a second `.sml` with that folder
+name and it can appear as a duplicate mod.
+
 ## Creating a Container Mod
 
 Use `MSL_Live_Container_Glowing_Relic_Casket` as a complete example. A minimal
@@ -255,17 +292,12 @@ loot rules for concrete items. Your addon still needs to add or clone:
 - Destroying a live-container item syncs and destroys its hidden holder.
 - Contents remain live while the owning item instance exists and has been loaded.
 
-## Build
+## Development Notes
 
 The project targets `net6.0-windows` and references ModShardLauncher assemblies
-from `J:\msl`.
+from `J:\msl`. Running `dotnet build` is useful for quick C# syntax checks, but
+the normal distributable `.sml` should be produced by ModShardLauncher from the
+`ModSources` project folder.
 
-```powershell
-dotnet build .\LiveContainers.csproj -c Release
-```
-
-To pack an `.sml`, use the workspace packer from the development workspace:
-
-```powershell
-.\tools\build-msl-mod.ps1 -Project .\outputs\LiveContainersMSL\LiveContainers.csproj -NoInstall
-```
+The helper scripts under the local development workspace are only for this
+repository's maintainer workflow; addon authors do not need them.

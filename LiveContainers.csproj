@@ -3,14 +3,16 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <MslRoot Condition="'$(MslRoot)' == '' and Exists('..\..\ModShardLauncher.dll')">..\..</MslRoot>
+    <MslRoot Condition="'$(MslRoot)' == ''">J:\msl</MslRoot>
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="ModShardLauncher">
-      <HintPath>J:\msl\ModShardLauncher.dll</HintPath>
+      <HintPath>$(MslRoot)\ModShardLauncher.dll</HintPath>
     </Reference>
     <Reference Include="UndertaleModLib">
-      <HintPath>J:\msl\UndertaleModLib.dll</HintPath>
+      <HintPath>$(MslRoot)\UndertaleModLib.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

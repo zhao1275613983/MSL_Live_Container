@@ -291,11 +291,15 @@ loot rules for concrete items. Your addon still needs to add or clone:
   before the game saves inventory data.
 - Destroying a live-container item syncs and destroys its hidden holder.
 - Contents remain live while the owning item instance exists and has been loaded.
+- Automatic insertion into live containers scans cells row-first, matching the
+  normal backpack reading order.
 
 ## Development Notes
 
-The project targets `net6.0-windows` and references ModShardLauncher assemblies
-from `J:\msl`. Running `dotnet build` is useful for quick C# syntax checks, but
+The project targets `net6.0-windows`. When the project is placed under
+`ModSources`, the `.csproj` references ModShardLauncher assemblies through the
+relative `..\..` path. Outside MSL's folder, it falls back to `J:\msl` for local
+development. Running `dotnet build` is useful for quick C# syntax checks, but
 the normal distributable `.sml` should be produced by ModShardLauncher from the
 `ModSources` project folder.
 

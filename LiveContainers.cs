@@ -13,7 +13,7 @@ public class LiveContainers : Mod
     public override string Name => "Live Containers";
     public override string Description => "Adds reusable live-container base classes whose closed contents remain instantiated.";
     public override string ShortDesc => "Reusable live container framework.";
-    public override string Version => "0.1.0.0";
+    public override string Version => "0.1.1.0";
     public override string TargetVersion => "v0.13.2.0";
 
     public override void PatchMod()
@@ -22,6 +22,7 @@ public class LiveContainers : Mod
         AddFunctions();
         AddEvents();
         PatchContainerRules();
+        PatchQuickMoveScanOrder();
         PatchClosedContainerInsertion();
         PatchPersistence();
     }
@@ -596,6 +597,17 @@ scr_guiLayoutOffsetUpdate(id, -10000, -10000)
         if (!scr_live_container_accepts_item(argument0, argument1))
             return false;
         if (_container_object == o_container_gold || _container_object == o_inv_moneybag)")
+            .Save();
+    }
+
+    private void PatchQuickMoveScanOrder()
+    {
+        Msl.LoadGML("gml_GlobalScript_scr_inventory_get_cell_free")
+            .MatchFrom(@"            _cell = scr_inventory_container_get_cell_free(argument2[_i], id, ((!(instance_is(argument0, o_trade_inventory))) && (!(instance_is(argument0, o_stash_inventory)))))")
+            .ReplaceBy(@"            var _scan_by_columns = ((!(instance_is(argument0, o_trade_inventory))) && (!(instance_is(argument0, o_stash_inventory))))
+            if (object_is(argument0.object_index, o_container_live_container_parent) || object_is(argument0.object_index, o_live_container_holder_parent))
+                _scan_by_columns = false
+            _cell = scr_inventory_container_get_cell_free(argument2[_i], id, _scan_by_columns)")
             .Save();
     }
 

@@ -15,7 +15,7 @@ public class LiveContainers : Mod
     public override string Name => "Live Containers";
     public override string Description => "Adds reusable live-container base classes whose closed contents remain instantiated.";
     public override string ShortDesc => "Reusable live container framework.";
-    public override string Version => "0.1.2.0";
+    public override string Version => "0.1.3.0";
     public override string TargetVersion => "v0.13.2.0";
 
     public override void PatchMod()
@@ -617,7 +617,7 @@ scr_guiLayoutOffsetUpdate(id, -10000, -10000)
 
     private void PatchClosedContainerInsertion()
     {
-        if (IsModEnabled("Rusty Drag&Drop Support"))
+        if (IsAnyModEnabled("Rusty Drag&Drop Support", "Rusty_BackDrag"))
             return;
 
         Msl.LoadGML("gml_Object_o_inv_slot_Other_21")
@@ -638,7 +638,7 @@ scr_guiLayoutOffsetUpdate(id, -10000, -10000)
             .Save();
     }
 
-    private static bool IsModEnabled(string modName)
+    private static bool IsAnyModEnabled(params string[] modNames)
     {
         try
         {
@@ -649,14 +649,31 @@ scr_guiLayoutOffsetUpdate(id, -10000, -10000)
                 return false;
             foreach (var enabledMod in enabled)
             {
-                if (string.Equals(enabledMod?.ToString(), modName, StringComparison.OrdinalIgnoreCase))
-                    return true;
+                var enabledName = enabledMod?.ToString();
+                if (string.IsNullOrWhiteSpace(enabledName))
+                    continue;
+
+                foreach (var modName in modNames)
+                {
+                    if (IsSameModName(enabledName, modName))
+                        return true;
+                }
             }
         }
         catch
         {
         }
         return false;
+    }
+
+    private static bool IsSameModName(string enabledName, string expectedName)
+    {
+        if (string.Equals(enabledName, expectedName, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        var enabledFileName = Path.GetFileNameWithoutExtension(enabledName);
+        var expectedFileName = Path.GetFileNameWithoutExtension(expectedName);
+        return string.Equals(enabledFileName, expectedFileName, StringComparison.OrdinalIgnoreCase);
     }
 
     private void PatchPersistence()

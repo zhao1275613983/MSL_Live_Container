@@ -313,8 +313,9 @@ repository's maintainer workflow; addon authors do not need them.
 
 `Rusty Drag&Drop Support` and `Live Containers` both need to touch
 `gml_Object_o_inv_slot_Other_21`, the global inventory-slot drag handler.
-Starting with `Live Containers` 0.1.2, this library detects Rusty BackDrag and
-skips its own closed-container drag patch so Rusty can apply cleanly.
+Starting with `Live Containers` 0.1.3, this library detects Rusty BackDrag by
+either its display name or file name and skips its own closed-container drag
+patch so Rusty can apply cleanly.
 
 In that mode, normal Rusty BackDrag behavior remains available for vanilla
 containers, while normal closed-container insertion into live-container items is

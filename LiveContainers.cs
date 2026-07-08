@@ -1,6 +1,8 @@
 ﻿using ModShardLauncher;
 using ModShardLauncher.Mods;
+using System.Collections;
 using System.IO;
+using System.Reflection;
 using UndertaleModLib;
 using UndertaleModLib.Models;
 using UndertaleModLib.Util;
@@ -13,7 +15,7 @@ public class LiveContainers : Mod
     public override string Name => "Live Containers";
     public override string Description => "Adds reusable live-container base classes whose closed contents remain instantiated.";
     public override string ShortDesc => "Reusable live container framework.";
-    public override string Version => "0.1.1.0";
+    public override string Version => "0.1.2.0";
     public override string TargetVersion => "v0.13.2.0";
 
     public override void PatchMod()
@@ -594,6 +596,8 @@ scr_guiLayoutOffsetUpdate(id, -10000, -10000)
         if (_container_object == o_container_gold || _container_object == o_inv_moneybag)")
             .ReplaceBy(@"        var _container_object = argument0.object_index
         var _container_content_type = argument0.contentType
+        if (scr_live_container_is_item(argument0))
+            return false;
         if (!scr_live_container_accepts_item(argument0, argument1))
             return false;
         if (_container_object == o_container_gold || _container_object == o_inv_moneybag)")
@@ -613,6 +617,9 @@ scr_guiLayoutOffsetUpdate(id, -10000, -10000)
 
     private void PatchClosedContainerInsertion()
     {
+        if (IsModEnabled("Rusty Drag&Drop Support"))
+            return;
+
         Msl.LoadGML("gml_Object_o_inv_slot_Other_21")
             .MatchFrom(@"with (_slotID)
 {")
@@ -629,6 +636,27 @@ scr_guiLayoutOffsetUpdate(id, -10000, -10000)
             .MatchFrom("self.update_ammo_order()")
             .ReplaceBy("script_execute(self.update_ammo_order)")
             .Save();
+    }
+
+    private static bool IsModEnabled(string modName)
+    {
+        try
+        {
+            var mainType = typeof(Mod).Assembly.GetType("ModShardLauncher.Main");
+            var settings = mainType?.GetField("Settings", BindingFlags.Public | BindingFlags.Static)?.GetValue(null);
+            var enabled = settings?.GetType().GetField("EnableMods", BindingFlags.Public | BindingFlags.Instance)?.GetValue(settings) as IEnumerable;
+            if (enabled is null)
+                return false;
+            foreach (var enabledMod in enabled)
+            {
+                if (string.Equals(enabledMod?.ToString(), modName, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+        }
+        catch
+        {
+        }
+        return false;
     }
 
     private void PatchPersistence()

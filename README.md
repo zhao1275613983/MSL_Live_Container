@@ -306,3 +306,30 @@ distributable `.sml` should be produced by ModShardLauncher from the
 
 The helper scripts under the local development workspace are only for this
 repository's maintainer workflow; addon authors do not need them.
+
+## Compatibility Notes
+
+### Rusty Drag&Drop Support
+
+`Rusty Drag&Drop Support` and `Live Containers` both need to touch
+`gml_Object_o_inv_slot_Other_21`, the global inventory-slot drag handler.
+Starting with `Live Containers` 0.1.2, this library detects Rusty BackDrag and
+skips its own closed-container drag patch so Rusty can apply cleanly.
+
+In that mode, normal Rusty BackDrag behavior remains available for vanilla
+containers, while normal closed-container insertion into live-container items is
+blocked so items cannot bypass the live holder and fall back into a plain
+`lootList`.
+
+To restore direct drag-and-drop into closed live containers, load a small
+compatibility patch after Rusty:
+
+```text
+LiveContainers.sml
+<your live-container addon>.sml
+Rusty_BackDrag.sml
+ZZZ_LiveContainers_RustyBackDragCompat.sml
+```
+
+The compatibility patch waits until Rusty has rewritten the target function,
+then inserts the live-container branch back into the already-compatible GML.

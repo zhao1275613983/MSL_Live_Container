@@ -15,7 +15,7 @@ public class LiveContainers : Mod
     public override string Name => "Live Containers";
     public override string Description => "Adds reusable live-container base classes whose closed contents remain instantiated.";
     public override string ShortDesc => "Reusable live container framework.";
-    public override string Version => "0.1.3.0";
+    public override string Version => "0.1.4.0";
     public override string TargetVersion => "v0.13.2.0";
 
     public override void PatchMod()
@@ -591,16 +591,11 @@ scr_guiLayoutOffsetUpdate(id, -10000, -10000)
             .Save();
 
         Msl.LoadGML("gml_GlobalScript_scr_item_can_add_to_container")
-            .MatchFrom(@"        var _container_object = argument0.object_index
-        var _container_content_type = argument0.contentType
-        if (_container_object == o_container_gold || _container_object == o_inv_moneybag)")
-            .ReplaceBy(@"        var _container_object = argument0.object_index
-        var _container_content_type = argument0.contentType
-        if (scr_live_container_is_item(argument0))
+            .MatchFrom("        var _container_content_type = argument0.contentType")
+            .InsertBelow(@"        if (scr_live_container_is_item(argument0))
             return false;
         if (!scr_live_container_accepts_item(argument0, argument1))
-            return false;
-        if (_container_object == o_container_gold || _container_object == o_inv_moneybag)")
+            return false;")
             .Save();
     }
 
